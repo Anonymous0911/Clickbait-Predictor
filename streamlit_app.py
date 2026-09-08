@@ -70,7 +70,7 @@ st.markdown(
 
 st.write("")
 
-model_path = "artifacts/clickbait_detector.joblib"
+model_path = Path(__file__).resolve().parent / "artifacts" / "clickbait_detector.joblib"
 headline = st.text_area("Headline or title", height=120, placeholder="Enter an article headline or video title...")
 thumbnail = st.file_uploader("Thumbnail image", type=["png", "jpg", "jpeg", "webp"])
 
