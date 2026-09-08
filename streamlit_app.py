@@ -70,11 +70,7 @@ st.markdown(
 
 st.write("")
 
-with st.sidebar:
-    st.header("Model")
-    model_path = st.text_input("Saved model path", value="artifacts/clickbait_detector.joblib")
-    st.caption("Train a model first with train.py, then point this app to the saved .joblib file.")
-
+model_path = "artifacts/clickbait_detector.joblib"
 headline = st.text_area("Headline or title", height=120, placeholder="Enter an article headline or video title...")
 thumbnail = st.file_uploader("Thumbnail image", type=["png", "jpg", "jpeg", "webp"])
 
