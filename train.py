@@ -12,7 +12,12 @@ from clickbait_model import ClickbaitDetector
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train a clickbait detector from labeled headlines and thumbnails.")
-    parser.add_argument("--data", required=True, help="Path to a CSV file with headline and label or clickbait columns.")
+    parser.add_argument(
+        "--data",
+        required=True,
+        nargs="+",
+        help="One or more CSV files with headline/title and label/isClickbait columns.",
+    )
     parser.add_argument("--output", default="artifacts/clickbait_detector.joblib", help="Where to save the trained model.")
     parser.add_argument("--text-model-name", default="distilbert-base-uncased", help="Hugging Face DistilBERT model name.")
     parser.add_argument("--vision-model-name", default="openai/clip-vit-base-patch32", help="Hugging Face CLIP model name.")
@@ -22,17 +27,36 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
-    args = parse_args()
-    frame = pd.read_csv(args.data)
+def load_training_frame(paths: list[str]) -> pd.DataFrame:
+    frames = []
+    for path in paths:
+        frame = pd.read_csv(path)
+        column_aliases = {
+            "title": "headline",
+            "Video Title": "headline",
+            "isClickbait": "label",
+            "is_clickbait": "label",
+            "clickbait": "label",
+        }
+        frame = frame.rename(columns={key: value for key, value in column_aliases.items() if key in frame.columns})
+        frames.append(frame)
 
-    if "label" not in frame.columns and "clickbait" in frame.columns:
-        frame = frame.rename(columns={"clickbait": "label"})
-
+    combined = pd.concat(frames, ignore_index=True)
     required_columns = {"headline", "label"}
-    missing = sorted(required_columns - set(frame.columns))
+    missing = sorted(required_columns - set(combined.columns))
     if missing:
         raise ValueError(f"Missing required columns: {', '.join(missing)}")
+    combined = combined.dropna(subset=["headline", "label"])
+    combined["headline"] = combined["headline"].astype(str).str.strip()
+    combined["label"] = combined["label"].astype(int)
+    if combined["label"].nunique() < 2:
+        raise ValueError("Training data must contain both label 0 (not clickbait) and label 1 (clickbait).")
+    return combined
+
+
+def main() -> None:
+    args = parse_args()
+    frame = load_training_frame(args.data)
 
     train_frame, validation_frame = train_test_split(
         frame,

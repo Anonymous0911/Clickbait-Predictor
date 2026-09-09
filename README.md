@@ -54,6 +54,12 @@ Train a model first:
 python train.py --data data/train.csv --output artifacts/clickbait_detector.joblib
 ```
 
+Multiple CSV files can be supplied together. The trainer accepts `headline`/`label` as well as common YouTube dataset names such as `title`/`isClickbait` and `Video Title`/`isClickbait`:
+
+```bash
+python train.py --data data/clickbait_100_data.csv data/out.csv --output artifacts/clickbait_detector.joblib
+```
+
 Start the FastAPI backend:
 
 ```powershell
@@ -76,6 +82,24 @@ The frontend runs at `http://localhost:5173` and sends multipart requests to `ht
 ```bash
 python train.py --data data/train.csv --output artifacts/clickbait_detector.joblib
 ```
+
+## Build a thumbnail dataset
+
+The reference project workflow is available through `youtube_pipeline.py`. It uses the YouTube Data API for metadata collection, so set `YOUTUBE_API_KEY` or pass `--api-key` for the first step:
+
+```powershell
+$env:YOUTUBE_API_KEY="your-key"
+python youtube_pipeline.py collect --query "top 10 mysteries" --dataset data/youtube_thumbnails.csv
+python youtube_pipeline.py download --dataset data/youtube_thumbnails.csv --output-dir data/thumbnails
+python youtube_pipeline.py label --dataset data/youtube_thumbnails.csv
+python train.py --data data/youtube_thumbnails.csv --output artifacts/youtube_detector.joblib
+```
+
+You can also run `streamlit run streamlit_app.py` and use the thumbnail labeling workspace to review one image at a time. Labels are stored as `1` for clickbait and `0` for not clickbait.
+
+## Browser extension template
+
+Start the API locally, then load the `extension` folder as an unpacked extension from `chrome://extensions` or `edge://extensions`. The content script sends sufficiently large page images to `/predict` and places a small verdict badge over each image. The template is intentionally limited to localhost and does not upload images to a third-party service.
 
 ## Predict
 
