@@ -214,6 +214,8 @@ class ClickbaitDetector:
             inputs = {key: value.to(self.device) for key, value in inputs.items()}
             with torch.no_grad():
                 embeddings = self.image_encoder.get_image_features(**inputs)
+                if not isinstance(embeddings, torch.Tensor):
+                    embeddings = embeddings.pooler_output
                 embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=-1)
             size = len(batch)
             features[valid_indices[cursor : cursor + size]] = embeddings.cpu().numpy()

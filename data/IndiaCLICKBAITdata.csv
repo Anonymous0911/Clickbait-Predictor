@@ -1,0 +1,101 @@
+headline,label,category,pattern
+"You Won't Believe What Katrina Said About Salman at Recent Party!",1,Bollywood,Curiosity Gap
+"Netizens Shocked After Video of Star Kid Outside Bandra Club Leaks",1,Bollywood,Sensational Reaction
+"Is Shah Rukh Khan Leaving Mannat Forever? Fans in Tears After Viral Post",1,Bollywood,Speculative Alarmism
+"Kareena Kapoor Khan Ignored Paparazzi Because of THIS Shocking Reason",1,Bollywood,Information Withholding
+"Aishwarya Rai Spotted Without Abhishek Bachchan Again: Divorce Confirmed?",1,Bollywood,Leading Question
+"Fans Furious as Bollywood Producer Drops Major Bombshell on Star's Career",1,Bollywood,Inflated Conflict
+"Urvashi Rautela's 24K Gold Dress Breaks the Internet: Cost Will Blow Your Mind!",1,Bollywood,Hyperbolic Exaggeration
+"Did Ananya Panday Just Take a Nasty Dig at Sara Ali Khan on Live Show?",1,Bollywood,Confrontational Bait
+"Ranbir Kapoor Leaves Set in Anger After Heated Argument With Director",1,Bollywood,Unverified Drama
+"Remember This Child Artist from 90s? You Won't Recognize Her Today!",1,Bollywood,Nostalgia Clickbait
+"Rohit Sharma's Explosive Locker Room Fight With Hardik Pandya Exposed!",1,Cricket,Emotional Conflict
+"Virat Kohli Breaks Down in Tears After Umpire's Blunder in Final Over",1,Cricket,Melodramatic Exaggeration
+"Is MS Dhoni Retiring Tonight? Cryptic 3-Word Tweet Sends Fans Into Frenzy",1,Cricket,Speculative Rumor
+"Gautam Gambhir Refuses to Shake Hands With Star Player After Tragic Loss",1,Cricket,Fabricated Tension
+"BCCI Furious After Star Indian Batter Caught Partying Late Night Before Match",1,Cricket,Sensational Disciplinary Bait
+"Did Shubman Gill Secretly Get Engaged in London? Viral Photo Sparks Buzz",1,Cricket,Gossip Speculation
+"Shocking! Team India Captain Dropped From Squad Ahead of Mega Series?",1,Cricket,False Alarm
+"Pakistani Legend Makes Humiliating Statement on Indian Pace Attack: Watch",1,Cricket,Outrage Bait
+"IPL Franchise to Terminate ₹15 Crore Contract Over Disciplinary Action?",1,Cricket,Monetary Bait
+"This 21-Year-Old Domestic Sensation Could Replace Virat Kohli Permanently!",1,Cricket,Hyperbolic Comparison
+"Modi Government Directly Crediting ₹75,000 in Every Jan Dhan Account: Apply Now",1,Policy,False Financial Incentive
+"Urgent Alert: RBI Ordering Complete Ban on These 5 Currency Notes From Monday!",1,Finance,Panic Trigger
+"Income Tax Department Raiding Bank Accounts With Over ₹2 Lakh Balance Tonight",1,Finance,Fear-Inducing Bait
+"Free Gas Cylinder Scheme Announced for All Citizens: Check Your Name in List",1,Policy,Eligibility Bait
+"All Sim Cards Without Aadhaar Link to Be Deactivated in 48 Hours: Details Inside",1,Governance,Manufactured Urgency
+"7th Pay Commission: Government Employees to Receive 50% DA Hike This Diwali?",1,Policy,Wishful Speculation
+"Post Office Secret Scheme Doubles Your Investment in Just 18 Months!",1,Finance,Unrealistic Financial Return
+"Indian Railways Scraps Tatkal Booking System Completely: New Rules Shock Commuters",1,Governance,Sensational Misrepresentation
+"PAN Card Deactivation Notice: Pay ₹10,000 Fine If You Miss Tomorrow's Deadline",1,Finance,Deadline Threat
+"Check Your Ration Card: Central Government Removing Millions of Beneficiaries",1,Policy,Alarmist Phrasing
+"Drink Jeera Water With This Desi Herb Every Morning to Melt Belly Fat in 7 Days",1,Health,Miracle Cure
+"Top Cardiologist Reveals The 1 Kitchen Ingredient Secretly Destroying Your Heart",1,Health,Threat Framing
+"Boil These Leaves Before Bed and Say Goodbye to Diabetes Forever!",1,Health,Pseudo-Medical Claim
+"Never Eat Curd at Night: Ayurvedic Experts Warn of Fatal Health Hazards",1,Health,Superstitious Alarmism
+"Miracle Oil Growing Full Hair on Bald Heads in 3 Weeks: Doctors Speechless",1,Health,Hyperbolic Promise
+"Bengaluru Techie Quits ₹40 LPA Job to Sell Chai: You Won't Believe His Revenue!",1,Tech,Aspirational Curiosity
+"IT Layoffs Coming: Infosys and TCS Reportedly Sacking 50,000 Engineers Next Week",1,Tech,Unverified Mass Panic
+"22-Year-Old College Dropout Becomes Billionaire Overnight With Secret AI Tool",1,Tech,Get-Rich-Quick Bait
+"WhatsApp Introducing Paid Subscription for Voice Calls From Next Month?",1,Tech,Leading Speculative Question
+"Work From Home Banned Across Entire Indian IT Sector Under Strict Labor Law",1,Tech,False Regulatory Alarm
+"10 Haunting Places in Rajasthan You Should Never Visit After Sunset",1,Travel,Supernatural Listicle
+"Top 5 Hill Stations Near Delhi That Are Completely Hidden From Tourists",1,Travel,Exclusivity Framing
+"7 Dark Secrets Indian Hotels Don't Want You to Know About Buffet Food",1,Lifestyle,Conspiracy Framing
+"CCTV Footage Shows Ghostly Figure Roaming Delhi Metro Station at 3 AM",1,Sensational,Paranormal Bait
+"Miracle in Varanasi: Holy Cow Shuts Down Highway and Stuns Pilgrims",1,Sensational,Viral Superstition
+"Netizens Are Calling Out This Famous Vlogger for Fake Charity Stunt",1,Social Media,Outrage Amplification
+"Bride Cancels Wedding at Mandap After Groom Fails This Bizarre Math Test",1,Sensational,Bizarre Trivia
+"Is World War 3 Starting Next Month? Astrologer's Chilling Prediction for India",1,Sensational,Apocalyptic Clickbait
+"Passenger Finds Live Lizard in Flight Meal: Airline's Reaction Sparks Outrage",1,Sensational,Disgust Trigger
+"Viral Video: Desi Uncle's Dance at Delhi Wedding Puts Hrithik Roshan to Shame!",1,Social Media,Hyperbolic Social Bait
+"Deepika Padukone and Ranveer Singh attend screening in Mumbai",0,Bollywood,Neutral Reporting
+"Kareena Kapoor Khan to headline Hansal Mehta's investigative drama",0,Bollywood,Casting Announcement
+"Shah Rukh Khan wraps shooting schedule for upcoming action feature",0,Bollywood,Production Update
+"Aishwarya Rai Bachchan attends Cannes Film Festival red carpet",0,Bollywood,Event Coverage
+"Dharma Productions announces theatrical release date for romantic comedy",0,Bollywood,Official Release Notice
+"Alia Bhatt delivers keynote address at Forbes India Leadership Forum",0,Bollywood,Institutional Event
+"MAMI Mumbai Film Festival opens registration for independent filmmakers",0,Bollywood,Administrative Notice
+"National Film Awards jury announces winners for feature categories in New Delhi",0,Bollywood,Official Announcement
+"Yash Raj Films reports ₹240 crore global box office collection in opening week",0,Bollywood,Financial Metric Report
+"Katrina Kaif expands beauty brand product line to overseas markets",0,Bollywood,Commercial News
+"BCCI announces 15-member Indian squad for upcoming Australia Test tour",0,Cricket,Official Squad Selection
+"Rohit Sharma addresses pre-match press conference ahead of Border-Gavaskar Trophy",0,Cricket,Press Conference
+"Virat Kohli reaches 13,000 ODI runs milestone in match against South Africa",0,Cricket,Statistical Milestone
+"MS Dhoni captains Chennai Super Kings in IPL opening fixture against Titans",0,Cricket,Match Fact
+"Gautam Gambhir appointed head coach of Indian Men's Cricket Team",0,Cricket,Official Appointment
+"Jasprit Bumrah returns to competitive cricket following rehabilitation period",0,Cricket,Player Status Update
+"ICC releases updated test rankings following conclusion of London test",0,Cricket,Official Rankings Update
+"WPL auction concludes with domestic all-rounders securing top bids",0,Cricket,Auction Summary
+"Ranji Trophy semi-finals scheduled across venues in Mumbai and Rajkot",0,Cricket,Fixture Notice
+"India defeats England by 4 wickets to level five-match bilateral series",0,Cricket,Match Result
+"RBI keeps repo rate unchanged at 6.5% during monetary policy review",0,Finance,Monetary Policy Update
+"Ministry of Finance releases quarterly direct tax collection statistics",0,Finance,Statistical Release
+"Supreme Court reserves verdict on state sub-classification of Scheduled Castes",0,Judiciary,Procedural Legal Report
+"Central Board of Direct Taxes extends ITR verification deadline by 30 days",0,Finance,Administrative Extension
+"Department of Telecommunications issues revised spectrum allocation rules",0,Governance,Regulatory Policy
+"UIDAI clarifies guidelines on biometric updates for Aadhaar holders",0,Governance,Official Directive
+"Ministry of Consumer Affairs notifies revised norms for packaged goods",0,Governance,Regulatory Update
+"Election Commission of India reviews poll preparedness across five states",0,Governance,Administrative Meeting
+"Government of India inaugurates 4-lane expressway section in Uttar Pradesh",0,Infrastructure,Project Launch
+"Parliament passes Digital Personal Data Protection legislation with revisions",0,Governance,Legislative Update
+"ICMR releases advisory on seasonal influenza surveillance and prevention",0,Health,Clinical Advisory
+"FSSAI issues revised nutritional labeling guidelines for packaged edible oils",0,Health,Food Safety Regulation
+"AIIMS New Delhi conducts multi-center study on diabetes prevalence",0,Health,Academic Research
+"Ministry of Health reports 12% decline in maternal mortality ratio",0,Health,Public Health Statistic
+"National Medical Commission notifies updated syllabus for postgraduate medicine",0,Health,Curricular Notice
+"TCS reports 6.2% rise in consolidated net profit for second quarter",0,Tech,Quarterly Earnings
+"Infosys announces collaboration with European telecommunications provider",0,Tech,Enterprise Contract
+"Wipro appoints new regional chief executive for Asia-Pacific operations",0,Tech,Executive Leadership Change
+"Ministry of Electronics and IT invites proposals for semiconductor incentives",0,Tech,Government Tender
+"SEBI introduces tighter disclosure standards for initial public offerings",0,Finance,Market Regulation
+"IMD predicts above-normal southwest monsoon rainfall over northwest India",0,Environment,Meteorological Forecast
+"Indian Railways flags off 10 new Vande Bharat train routes",0,Infrastructure,Operational Expansion
+"Sensex drops 420 points amid sustained foreign institutional fund outflows",0,Finance,Market Movement
+"ISRO successfully conducts second landing experiment for reusable launch vehicle",0,Science,Mission Milestone
+"NITI Aayog publishes annual SDG India Index evaluating state progress",0,Policy,Developmental Metric
+"Archaeological Survey of India begins conservation work at Red Fort complex",0,Heritage,Public Works Update
+"National Green Tribunal directs state authorities to submit Yamuna cleanup plan",0,Judiciary,Judicial Directive
+"Delhi High Court dismisses public interest litigation challenging airport tariff",0,Judiciary,Court Ruling
+"Coal India records 7.8% year-on-year growth in dry fuel production",0,Industry,Industrial Output Metric
+"DGCA issues flight safety advisory to domestic air carriers for winter operations",0,Aviation,Safety Directive

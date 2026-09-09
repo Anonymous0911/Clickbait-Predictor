@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import tempfile
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -23,6 +24,11 @@ def write_uploaded_thumbnail(uploaded_file) -> Path:
     temp_file.flush()
     temp_file.close()
     return Path(temp_file.name)
+
+
+def clear_inputs() -> None:
+    st.session_state["headline"] = ""
+    st.session_state["thumbnail"] = None
 
 
 st.markdown(
@@ -70,19 +76,24 @@ st.markdown(
 
 st.write("")
 
-model_path = Path(__file__).resolve().parent / "artifacts" / "clickbait_detector.joblib"
-headline = st.text_area("Headline or title", height=120, placeholder="Enter an article headline or video title...")
-thumbnail = st.file_uploader("Thumbnail image", type=["png", "jpg", "jpeg", "webp"])
+artifacts_dir = Path(__file__).resolve().parent / "artifacts"
+default_model = artifacts_dir / "clickbait_detector.joblib"
+if not default_model.exists():
+    default_model = artifacts_dir / "youtube_detector.joblib"
+model_path = Path(os.getenv("CLICKBAIT_MODEL_PATH", str(default_model)))
+headline = st.text_area(
+    "Headline or title",
+    height=120,
+    placeholder="Enter an article headline or video title...",
+    key="headline",
+)
+thumbnail = st.file_uploader("Thumbnail image", type=["png", "jpg", "jpeg", "webp"], key="thumbnail")
 
 col1, col2 = st.columns([1, 1])
 with col1:
     predict_clicked = st.button("Predict", use_container_width=True)
 with col2:
-    clear_clicked = st.button("Clear", use_container_width=True)
-
-if clear_clicked:
-    st.session_state["headline"] = ""
-    st.rerun()
+    st.button("Clear", use_container_width=True, on_click=clear_inputs)
 
 if predict_clicked:
     if not headline.strip() and thumbnail is None:
