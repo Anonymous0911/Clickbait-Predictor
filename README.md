@@ -51,13 +51,19 @@ Set the saved model path in the sidebar after training, or keep the default `art
 Train a model first:
 
 ```bash
-python train.py --data data/train.csv --output artifacts/clickbait_detector.joblib
+python train.py --data data/clickbait_100_data.csv data/indian_train.csv --output artifacts/clickbait_detector.joblib
 ```
 
 Multiple CSV files can be supplied together. The trainer accepts `headline`/`label` as well as common YouTube dataset names such as `title`/`isClickbait` and `Video Title`/`isClickbait`:
 
 ```bash
 python train.py --data data/clickbait_100_data.csv data/out.csv --output artifacts/clickbait_detector.joblib
+```
+
+The Indian headline dataset can be added to the training set in the same way. Keep `indian_test.csv` separate for future evaluation:
+
+```bash
+python train.py --data data/clickbait_100_data.csv data/indian_train.csv --output artifacts/clickbait_detector.joblib
 ```
 
 Start the FastAPI backend:
@@ -80,7 +86,7 @@ The frontend runs at `http://localhost:5173` and sends multipart requests to `ht
 ## Train
 
 ```bash
-python train.py --data data/train.csv --output artifacts/clickbait_detector.joblib
+python train.py --data data/clickbait_100_data.csv data/indian_train.csv --output artifacts/clickbait_detector.joblib
 ```
 
 ## Build a thumbnail dataset
