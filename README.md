@@ -77,14 +77,8 @@ uvicorn api:app --reload
 
 1. Open `database.sql` in SQL Server Management Studio and execute it against the SQL Server instance. It creates the `clickbait` database, `Users`, and `PredictionHistory` tables, plus the initial admin account.
 2. Install dependencies with `pip install -r requirements.txt` so the `pyodbc` SQL Server driver is available.
-3. Set the connection string and a private token secret before starting the API:
+3. Set the connection string and a private token secret before starting the API.
 
-```powershell
-$env:CLICKBAIT_DB_CONNECTION="DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=clickbait;Trusted_Connection=yes;TrustServerCertificate=yes"
-$env:CLICKBAIT_JWT_SECRET="replace-with-a-long-random-secret"
-```
-
-The initial administrator credentials are `admin` / `admin1109`. Change this password after the first login. New users must use passwords with at least 4 characters. Visitors can continue as guests, while signed-in users get saved prediction history and profile controls for history and password changes. Admin users can also access `/admin/users` and `/admin/history`.
 
 In a second terminal, install and start the React frontend:
 
