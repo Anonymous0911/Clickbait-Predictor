@@ -5,11 +5,12 @@ import tempfile
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from clickbait_model import ClickbaitDetector
+from auth_api import database, optional_user, router as auth_router
 
 
 class ExplainableSignalsResponse(BaseModel):
@@ -53,6 +54,7 @@ def create_app(model_path: str | Path | None = None) -> FastAPI:
         yield
 
     app = FastAPI(title="Clickbait AI API", version="2.0.0", lifespan=lifespan)
+    app.include_router(auth_router)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -75,6 +77,7 @@ def create_app(model_path: str | Path | None = None) -> FastAPI:
     async def predict(
         headline: str = Form(default=""),
         thumbnail: UploadFile | None = File(default=None),
+        user: dict | None = Depends(optional_user),
     ) -> PredictResponse:
         if detector is None:
             raise HTTPException(status_code=503, detail="Model is not loaded. Set CLICKBAIT_MODEL_PATH to a trained .joblib file.")
@@ -91,7 +94,7 @@ def create_app(model_path: str | Path | None = None) -> FastAPI:
             if temporary_path is not None:
                 temporary_path.unlink(missing_ok=True)
 
-        return PredictResponse(
+        response = PredictResponse(
             label=result.label,
             clickbait_probability=result.clickbait_probability,
             not_clickbait_probability=result.not_clickbait_probability,
@@ -100,6 +103,9 @@ def create_app(model_path: str | Path | None = None) -> FastAPI:
             thumbnail_probability=result.thumbnail_probability,
             signals=ExplainableSignalsResponse(**vars(result.signals)),
         )
+        if user:
+            database.save_prediction(int(user["sub"]), headline, response)
+        return response
 
     return app
 
