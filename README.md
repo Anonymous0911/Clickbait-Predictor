@@ -66,4 +66,4 @@ Headline with a thumbnail:
 python predict.py --model artifacts/clickbait_detector.joblib --headline "Breaking update from the city" --thumbnail path/to/thumbnail.jpg
 ```
 
-The included model files are examples. Train the model with a representative labeled dataset for meaningful predictions.
+<!-- The included model files are examples. Train the model with a representative labeled dataset for meaningful predictions. -->
