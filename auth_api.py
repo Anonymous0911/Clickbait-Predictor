@@ -95,18 +95,21 @@ class Database:
 
     @staticmethod
     def history_item(row) -> dict:
-        return {"id": row.HistoryId, "user_id": row.UserId, "headline": row.Headline, "label": row.Label, "clickbait_probability": row.ClickbaitProbability, "confidence": row.Confidence, "created_at": row.CreatedAt.isoformat()}
+        return {"id": row.HistoryId, "user_id": row.UserId, "guest_session_id": row.GuestSessionId, "headline": row.Headline, "label": row.Label, "clickbait_probability": row.ClickbaitProbability, "confidence": row.Confidence, "created_at": row.CreatedAt.isoformat()}
 
-    def save_prediction(self, user_id: int, headline: str, result):
+    def save_prediction(self, user_id: int | None, headline: str, result, guest_session_id: str | None = None):
         with self.connect() as connection:
-            connection.cursor().execute("INSERT INTO dbo.PredictionHistory (UserId, Headline, Label, ClickbaitProbability, Confidence, ResultJson) VALUES (?, ?, ?, ?, ?, ?)", user_id, headline[:500], result.label, result.clickbait_probability, result.confidence, result.model_dump_json())
+            connection.cursor().execute("INSERT INTO dbo.PredictionHistory (UserId, GuestSessionId, Headline, Label, ClickbaitProbability, Confidence, ResultJson) VALUES (?, ?, ?, ?, ?, ?, ?)", user_id, guest_session_id, headline[:500], result.label, result.clickbait_probability, result.confidence, result.model_dump_json())
 
-    def history(self, user_id: int | None = None):
-        query = "SELECT HistoryId, UserId, Headline, Label, ClickbaitProbability, Confidence, CreatedAt FROM dbo.PredictionHistory"
+    def history(self, user_id: int | None = None, guest_session_id: str | None = None):
+        query = "SELECT HistoryId, UserId, GuestSessionId, Headline, Label, ClickbaitProbability, Confidence, CreatedAt FROM dbo.PredictionHistory"
         parameters = ()
         if user_id is not None:
             query += " WHERE UserId = ?"
             parameters = (user_id,)
+        elif guest_session_id is not None:
+            query += " WHERE GuestSessionId = ?"
+            parameters = (guest_session_id,)
         query += " ORDER BY CreatedAt DESC"
         with self.connect() as connection:
             rows = connection.cursor().execute(query, *parameters).fetchall()

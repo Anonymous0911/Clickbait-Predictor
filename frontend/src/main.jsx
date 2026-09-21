@@ -68,6 +68,7 @@ function App() {
   function clearThumbnail() {
     setThumbnail(null);
     setPreview('');
+    setResult(null);
   }
 
   function useQuickScan(value) {
@@ -146,7 +147,7 @@ function App() {
         <div className="result-panel panel">
           {!result && !loading && <div className="empty-state"><div className="empty-icon"><ScanSearch size={30} /></div><span className="section-kicker">RESULT</span><h2>Your readout will land here</h2><p>Submit a headline, thumbnail, or both to see the model's confidence and the language signals behind it.</p></div>}
           {loading && <div className="empty-state"><LoaderCircle className="spin" size={34} /><span className="section-kicker">RESULT</span><h2>Comparing two modalities</h2><p>Embedding the words and visual composition, then fusing the evidence.</p></div>}
-          {result && <Result result={result} />}
+          {result && <Result result={result} hasThumbnail={Boolean(thumbnail)} />}
         </div>
       </section>
       <footer><span>CLICKBAIT AI / RESEARCH PREVIEW</span><span>Signals are probabilistic, not a verdict.</span></footer>
@@ -178,11 +179,12 @@ function AuthModal({ onSuccess, onClose }) {
   return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}><div className="auth-modal"><button className="modal-close" onClick={onClose} aria-label="Close"><X size={18} /></button><span className="section-kicker">KEEP YOUR SIGNALS</span><h2>{mode === 'login' ? 'Welcome back' : 'Create your account'}</h2><p>{mode === 'login' ? 'Sign in to keep a private record of every scan.' : 'Your scan history will follow you across sessions.'}</p><form onSubmit={submit}><input placeholder="Username" autoComplete="username" required value={form.username} onChange={(event) => setForm({ ...form, username: event.target.value })} /><input type="password" placeholder="Password" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} required value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} /><button className="small-action" type="submit">{mode === 'login' ? 'Sign in' : 'Create account'} <ArrowUpRight size={15} /></button></form>{error && <div className="error-message">{error}</div>}<button className="switch-auth" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>{mode === 'login' ? 'Need an account? Register' : 'Already have an account? Sign in'}</button></div></div>;
 }
 
-function Result({ result }) {
+function Result({ result, hasThumbnail }) {
   const isClickbait = result.label === 'clickbait';
   const signalEntries = Object.entries(result.signals);
   const leadSignal = signalEntries.reduce(([bestKey, bestValue], [key, value]) => value > bestValue ? [key, value] : [bestKey, bestValue], signalEntries[0] || ['', 0]);
   const strength = result.clickbait_probability >= 0.75 ? 'High-risk' : result.clickbait_probability >= 0.45 ? 'Watch closely' : 'Low-risk';
+  const thumbnailProbability = hasThumbnail ? result.thumbnail_probability : 0;
 
   return <div className="readout">
     <div className="result-head"><div><span className="section-kicker">02 / RESULT</span><div className={`verdict ${isClickbait ? 'danger' : 'clear'}`}>{isClickbait ? 'Likely clickbait' : 'Likely not clickbait'}</div></div><div className="confidence"><span>CONFIDENCE</span><strong>{(result.confidence * 100).toFixed(0)}%</strong></div></div>
@@ -193,7 +195,7 @@ function Result({ result }) {
     </div>
 
     <div className="probability-hero"><div className="probability-number">{(result.clickbait_probability * 100).toFixed(1)}<small>%</small></div><div><span className="section-kicker">FUSED CLICKBAIT PROBABILITY</span><div className="meter"><span style={{ width: `${result.clickbait_probability * 100}%` }} /></div><p>{isClickbait ? 'The combined evidence leans toward attention engineering.' : 'The combined evidence looks relatively grounded.'}</p></div></div>
-    <div className="modality-grid"><Probability title="Headline / DistilBERT" value={result.headline_probability} color="orange" /><Probability title="Thumbnail / CLIP" value={result.thumbnail_probability} color="teal" /></div>
+    <div className="modality-grid"><Probability title="Headline / DistilBERT" value={result.headline_probability} color="orange" /><Probability title="Thumbnail / CLIP" value={thumbnailProbability} color="teal" /></div>
     <div className="signals-heading"><div><span className="section-kicker">EXPLAINABILITY</span><h3>What pushed the score</h3></div><span className="signal-count">{signalEntries.length} signals</span></div>
     <div className="signals-list">{signalEntries.map(([key, value]) => <div className="signal-row" key={key}><div className="signal-name"><span className={`signal-dot ${value >= 0.45 ? 'active' : ''}`} />{signalLabels[key]}</div><div className="signal-track"><span style={{ width: `${value * 100}%` }} /></div><strong>{scoreLabel(value)}</strong></div>)}</div>
   </div>;
