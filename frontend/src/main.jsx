@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Activity, ArrowUpRight, CheckCircle2, History, ImagePlus, KeyRound, LoaderCircle, LogIn, LogOut, MoonStar, ScanSearch, ShieldCheck, Sparkles, SunMedium, UserCircle, X, Zap } from 'lucide-react';
+import { api } from './api';
 import './styles.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const signalLabels = {
   curiosity_gap: 'Curiosity gap',
@@ -44,12 +43,13 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('clickbait_theme') || 'dark');
 
   useEffect(() => {
-    const token = localStorage.getItem('clickbait_token');
-    if (!token) return;
-    fetch(`${API_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((response) => response.ok ? response.json() : Promise.reject())
-      .then(setUser)
-      .catch(() => localStorage.removeItem('clickbait_token'));
+    let active = true;
+    // The csrf call sets the cookie that later POSTs echo back as a header.
+    api('/api/auth/csrf')
+      .then(() => api('/api/auth/me'))
+      .then((payload) => { if (active) setUser(payload.user); })
+      .catch(() => {});
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
@@ -89,10 +89,7 @@ function App() {
     body.append('headline', headline);
     if (thumbnail) body.append('thumbnail', thumbnail);
     try {
-      const token = localStorage.getItem('clickbait_token');
-      const response = await fetch(`${API_URL}/predict`, { method: 'POST', body, headers: token ? { Authorization: `Bearer ${token}` } : {} });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.detail || 'The model could not analyze this item.');
+      const payload = await api('/api/predict', { method: 'POST', form: body });
       setResult(payload);
     } catch (requestError) {
       setError(requestError.message);
@@ -111,7 +108,7 @@ function App() {
             <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
           </button>
           {/* <div className="status"><span className="status-dot" /> Model online <ArrowUpRight size={15} /></div> */}
-          {user ? <div className="profile-wrap"><button className="profile-button" onClick={() => setProfileOpen(!profileOpen)}><UserCircle size={18} /><span>{user.username}</span></button>{profileOpen && <ProfileMenu user={user} onClose={() => setProfileOpen(false)} onLogout={() => { localStorage.removeItem('clickbait_token'); setUser(null); setProfileOpen(false); }} />}</div> : <button className="auth-button" onClick={() => setAuthOpen(true)}><LogIn size={16} /> Sign in</button>}
+          <div className="profile-wrap"><button className="profile-button" onClick={() => setProfileOpen(!profileOpen)}><UserCircle size={18} /><span>{user ? user.username : 'Guest'}</span></button>{profileOpen && <ProfileMenu user={user} onClose={() => setProfileOpen(false)} onSignIn={() => { setProfileOpen(false); setAuthOpen(true); }} onLogout={async () => { try { await api('/api/auth/logout', { method: 'POST' }); } catch { /* session may already be gone */ } setUser(null); setProfileOpen(false); }} />}</div>
         </div>
       </nav>
 
@@ -152,22 +149,37 @@ function App() {
       </section>
       <footer><span>CLICKBAIT AI / RESEARCH PREVIEW</span><span>Signals are probabilistic, not a verdict.</span></footer>
       {!user && <button className="guest-note" onClick={() => setAuthOpen(true)}>Continue as guest <ArrowUpRight size={14} /></button>}
-      {authOpen && <AuthModal onSuccess={(nextUser, token) => { localStorage.setItem('clickbait_token', token); setUser(nextUser); setAuthOpen(false); }} onClose={() => setAuthOpen(false)} />}
+      {authOpen && <AuthModal onSuccess={(nextUser) => { setUser(nextUser); setAuthOpen(false); }} onClose={() => setAuthOpen(false)} />}
     </main>
   );
 }
 
-function ProfileMenu({ user, onClose, onLogout }) {
+function ProfileMenu({ user, onClose, onLogout, onSignIn }) {
   const [view, setView] = useState(null);
-  return <div className="profile-menu">{!view ? <><div className="profile-summary"><UserCircle size={29} /><div><strong>{user.username}</strong><span>{user.role === 'admin' ? 'Administrator' : 'Member'}</span></div></div><button onClick={() => setView('history')}><History size={15} /> View history</button><button onClick={() => setView('password')}><KeyRound size={15} /> Change password</button>{user.role === 'admin' && <button onClick={() => setView('admin')}><ShieldCheck size={15} /> Admin overview</button>}<button className="logout-button" onClick={onLogout}><LogOut size={15} /> Sign out</button></> : <ProfileDetail view={view} user={user} onBack={() => setView(null)} onClose={onClose} />}</div>;
+  if (view) return <div className="profile-menu"><ProfileDetail view={view} user={user} onBack={() => setView(null)} onClose={onClose} /></div>;
+  if (!user) return <div className="profile-menu"><div className="profile-summary"><UserCircle size={29} /><div><strong>Guest</strong><span>Not signed in</span></div></div><button onClick={() => setView('history')}><History size={15} /> View history</button><button onClick={onSignIn}><LogIn size={15} /> Sign in</button></div>;
+  return <div className="profile-menu"><div className="profile-summary"><UserCircle size={29} /><div><strong>{user.username}</strong><span>{user.role === 'admin' ? 'Administrator' : 'Member'}</span></div></div><button onClick={() => setView('history')}><History size={15} /> View history</button><button onClick={() => setView('password')}><KeyRound size={15} /> Change password</button>{user.role === 'admin' && <button onClick={() => setView('admin')}><ShieldCheck size={15} /> Admin overview</button>}<button className="logout-button" onClick={onLogout}><LogOut size={15} /> Sign out</button></div>;
 }
 
 function ProfileDetail({ view, user, onBack }) {
   const [items, setItems] = useState([]);
   const [message, setMessage] = useState('');
   const [form, setForm] = useState({ current_password: '', new_password: '' });
-  useEffect(() => { if (view === 'history' || view === 'admin') { const endpoint = view === 'admin' ? '/admin/history' : '/auth/history'; fetch(`${API_URL}${endpoint}`, { headers: { Authorization: `Bearer ${localStorage.getItem('clickbait_token')}` } }).then((response) => response.json()).then(setItems); } }, [view]);
-  async function changePassword(event) { event.preventDefault(); const response = await fetch(`${API_URL}/auth/change-password`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('clickbait_token')}` }, body: JSON.stringify(form) }); const payload = await response.json(); setMessage(response.ok ? payload.message : payload.detail); }
+  useEffect(() => {
+    if (view !== 'history' && view !== 'admin') return;
+    let active = true;
+    api(view === 'admin' ? '/api/admin/history' : '/api/history')
+      .then((payload) => { if (active) setItems(payload.results); })
+      .catch((error) => { if (active) setMessage(error.message); });
+    return () => { active = false; };
+  }, [view]);
+  async function changePassword(event) {
+    event.preventDefault();
+    try {
+      const payload = await api('/api/auth/change-password', { method: 'POST', json: form });
+      setMessage(payload.message);
+    } catch (error) { setMessage(error.message); }
+  }
   return <div className="profile-detail"><button className="back-button" onClick={onBack}>← Profile</button>{view === 'password' ? <form onSubmit={changePassword}><h3>Change password</h3><input type="password" placeholder="Current password" required value={form.current_password} onChange={(event) => setForm({ ...form, current_password: event.target.value })} /><input type="password" placeholder="New password" required value={form.new_password} onChange={(event) => setForm({ ...form, new_password: event.target.value })} /><button className="small-action">Update password</button></form> : <><h3>{view === 'admin' ? 'All activity' : 'Your history'}</h3>{items.length ? items.slice(0, 8).map((item) => <div className="history-item" key={item.id}><strong>{item.headline || 'Image-only scan'}</strong><span>{item.label} · {(item.clickbait_probability * 100).toFixed(0)}%</span></div>) : <p className="menu-muted">No saved scans yet.</p>}</>}{message && <p className="menu-message">{message}</p>}</div>;
 }
 
@@ -175,7 +187,14 @@ function AuthModal({ onSuccess, onClose }) {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
-  async function submit(event) { event.preventDefault(); setError(''); const response = await fetch(`${API_URL}/auth/${mode}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) }); const payload = await response.json(); if (!response.ok) { setError(payload.detail || 'Unable to authenticate.'); return; } onSuccess(payload.user, payload.token); }
+  async function submit(event) {
+    event.preventDefault();
+    setError('');
+    try {
+      const payload = await api(`/api/auth/${mode}`, { method: 'POST', json: form });
+      onSuccess(payload.user);
+    } catch (requestError) { setError(requestError.message); }
+  }
   return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}><div className="auth-modal"><button className="modal-close" onClick={onClose} aria-label="Close"><X size={18} /></button><span className="section-kicker">KEEP YOUR SIGNALS</span><h2>{mode === 'login' ? 'Welcome back' : 'Create your account'}</h2><p>{mode === 'login' ? 'Sign in to keep a private record of every scan.' : 'Your scan history will follow you across sessions.'}</p><form onSubmit={submit}><input placeholder="Username" autoComplete="username" required value={form.username} onChange={(event) => setForm({ ...form, username: event.target.value })} /><input type="password" placeholder="Password" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} required value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} /><button className="small-action" type="submit">{mode === 'login' ? 'Sign in' : 'Create account'} <ArrowUpRight size={15} /></button></form>{error && <div className="error-message">{error}</div>}<button className="switch-auth" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>{mode === 'login' ? 'Need an account? Register' : 'Already have an account? Sign in'}</button></div></div>;
 }
 

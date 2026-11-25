@@ -1,0 +1,10 @@
+.git
+frontend/node_modules
+data
+docs
+.claude
+.review-diffs
+.remember
+.superpowers
+**/__pycache__
+.env

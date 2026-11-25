@@ -1,0 +1,37 @@
+[project]
+name = "baitbuster-backend"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "django",
+    "djangorestframework",
+    "celery[redis]",
+    "redis",
+    "psycopg[binary]",
+    "pillow",
+    "scikit-learn==1.9.0",
+    "torch",
+    "transformers",
+    "joblib",
+    "numpy",
+    "pandas",
+]
+
+[dependency-groups]
+dev = ["pytest", "pytest-django"]
+
+[tool.uv]
+# Only ever runs in Linux containers; keeps torch resolving from the CPU index.
+environments = ["sys_platform == 'linux'"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+testpaths = ["tests"]

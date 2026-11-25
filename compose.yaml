@@ -1,0 +1,70 @@
+x-backend: &backend
+  image: baitbuster-backend
+  build:
+    context: .
+    dockerfile: backend/Dockerfile
+  env_file: .env
+  depends_on:
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    <<: *backend
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - .:/app
+      - media:/data/media
+
+  worker:
+    <<: *backend
+    command: celery -A config worker --pool=solo --loglevel=info
+    volumes:
+      - .:/app
+      - media:/data/media
+      - hf-cache:/data/hf
+
+  frontend:
+    image: node:24-alpine
+    working_dir: /app/frontend
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      VITE_PROXY_TARGET: http://web:8000
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    depends_on:
+      - web
+    ports:
+      - "127.0.0.1:5173:5173"
+
+volumes:
+  pgdata:
+  media:
+  hf-cache:
