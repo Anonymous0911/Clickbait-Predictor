@@ -9,3 +9,4 @@ frontend/dist/
 data/
 database.sql
 setup_auth.py
+.env
